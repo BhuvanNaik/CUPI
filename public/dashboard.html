@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonPulse Stocks - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>📈 NeonPulse Stocks</h1>
+                <div class="connection-status">
+                    <span class="status-indicator" id="connectionStatus"></span>
+                    <span id="statusText">Connected</span>
+                </div>
+            </div>
+            <div class="user-info">
+                <button id="themeToggle" class="theme-toggle">Dark</button>
+                <span id="userEmail"></span>
+                <button id="logoutBtn" class="btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <section class="overview-grid">
+                <div class="overview-card">
+                    <div class="overview-title">Total Subscriptions</div>
+                    <div class="overview-value" id="overviewTotal">0</div>
+                    <div class="overview-sub">Across all supported tickers</div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-title">Top Gainer</div>
+                    <div class="overview-value" id="overviewGainer">—</div>
+                    <div class="overview-sub" id="overviewGainerChange">Waiting for data</div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-title">Top Loser</div>
+                    <div class="overview-value" id="overviewLoser">—</div>
+                    <div class="overview-sub" id="overviewLoserChange">Waiting for data</div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-title">Market Pulse</div>
+                    <div class="overview-value" id="overviewPulse">—</div>
+                    <div class="overview-sub" id="overviewPulseDesc">Awaiting updates</div>
+                </div>
+            </section>
+
+            <div class="subscription-panel">
+                <div class="panel-header">
+                    <h2>✨ Subscribe to Stocks</h2>
+                    <div class="subscription-count">
+                        <span id="subscriptionCount">0</span> subscribed
+                    </div>
+                </div>
+                <div class="stock-search-container">
+                    <input type="text" id="stockSearch" placeholder="🔍 Search stocks by ticker..." class="stock-search">
+                </div>
+                <div class="stock-selector">
+                    <select id="stockSelect">
+                        <option value="">Select a stock to subscribe...</option>
+                    </select>
+                    <button id="subscribeBtn" class="btn-primary">
+                        <span class="btn-icon">+</span>
+                        <span>Subscribe</span>
+                    </button>
+                </div>
+                <div class="supported-stocks">
+                    <h3>Available Stocks:</h3>
+                    <div class="stock-tags" id="stockTags">
+                        <!-- Stock tags will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="stocks-panel">
+                <div class="panel-header">
+                    <h2>📊 Live Market Data</h2>
+                    <div class="update-indicator">
+                        <span class="pulse-dot"></span>
+                        <span>Live Updates</span>
+                    </div>
+                </div>
+                <div id="stocksContainer" class="stocks-grid">
+                    <div class="no-stocks-card">
+                        <div class="no-stocks-icon">📈</div>
+                        <p class="no-stocks-title">No Subscriptions Yet</p>
+                        <p class="no-stocks-desc">Subscribe to stocks above to see real-time price updates</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="portfolio-panel">
+                <div class="panel-header">
+                    <h2>💼 Virtual Portfolio</h2>
+                </div>
+                <div class="portfolio-summary">
+                    <div class="summary-item">
+                        <div class="summary-label">Cash Balance</div>
+                        <div class="summary-value" id="cashBalance">$0.00</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Portfolio Value</div>
+                        <div class="summary-value" id="portfolioValue">$0.00</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Total Value</div>
+                        <div class="summary-value" id="totalValue">$0.00</div>
+                    </div>
+                </div>
+                <div class="portfolio-trade">
+                    <div class="trade-row">
+                        <select id="tradeTicker">
+                            <option value="">Select stock...</option>
+                        </select>
+                        <input type="number" id="tradeQuantity" min="1" placeholder="Qty">
+                        <button id="buyBtn" class="btn-primary btn-sm">Buy</button>
+                        <button id="sellBtn" class="btn-secondary btn-sm">Sell</button>
+                    </div>
+                    <small class="portfolio-hint">Trades use latest simulated prices. This is a virtual balance only.</small>
+                </div>
+                <div class="portfolio-holdings">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Qty</th>
+                                <th>Avg Price</th>
+                                <th>Last Price</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="holdingsBody">
+                            <tr class="no-holdings-row">
+                                <td colspan="5">No positions yet. Buy a stock to start your portfolio.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="alerts-panel">
+                <div class="panel-header">
+                    <h2>🔔 Price Alerts</h2>
+                </div>
+                <div class="alerts-content">
+                    <div class="alerts-form">
+                        <select id="alertTicker">
+                            <option value="">Select stock...</option>
+                        </select>
+                        <input type="number" id="alertAbove" step="0.01" placeholder="Alert above price">
+                        <input type="number" id="alertBelow" step="0.01" placeholder="Alert below price">
+                        <button id="saveAlertBtn" class="btn-primary btn-sm">Save Alert</button>
+                    </div>
+                    <p class="alerts-note">
+                        Alerts fire when price crosses above/below your levels.<br>
+                        Sudden moves &gt; 5% in a single tick also trigger live alerts.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Toast Notification -->
+        <div id="toast" class="toast"></div>
+    </div>
+    <script src="dashboard.js"></script>
+</body>
+</html>
+

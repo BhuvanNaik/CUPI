@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonPulse Stocks - Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-logo">NP</div>
+            <h1>Welcome back</h1>
+            <h2>Log in to your trading room</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" id="email" name="email" required placeholder="you@example.com">
+                </div>
+                <button type="submit" class="btn-primary">Continue</button>
+            </form>
+            <div id="errorMessage" class="error-message"></div>
+            <p class="auth-meta">Don’t have an account? <a href="/register" class="auth-link">Create one</a></p>
+        </div>
+        <div class="login-side-text">
+            <h3>Real‑time pink‑pulse markets.</h3>
+            <p>Subscribe to your favorite tickers and watch prices dance in real time across multiple dashboards.</p>
+            <ul>
+                <li>✨ Live updates every second</li>
+                <li>🧠 Intelligent overview cards</li>
+                <li>👥 Multi‑user, async dashboards</li>
+            </ul>
+        </div>
+    </div>
+    <script src="login.js"></script>
+</body>
+</html>
+
